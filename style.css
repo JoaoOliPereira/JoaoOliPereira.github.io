@@ -141,19 +141,28 @@
     font-size: 1em;
 }
 
-/* Game Section */
-.game {
-    width: 30vw;
+#tetrisCanvas{
     background-color: black;
-    padding: 1vw;
-    border: 0.2vw dashed white;
+    width: 550px;
+    height: 500px;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%; /* Ensure it doesn't stretch too wide */
+    height: 70vh; /* Use full viewport height */
+    justify-content: center; /* Center the game vertically */
 }
 
 .game-header {
     display: flex;
     justify-content: space-between;
-    color: white;
-    margin-bottom: 1vw;
+    width: 20rem;
+    margin-bottom: 1rem;
+    color: #fff;
+    font-size: 1.2rem;
 }
 
 .game-restart-btn {
@@ -166,7 +175,7 @@
 }
 
 .game-restart-btn:hover {
-    scale: 110%;
+    transform: scale(1.1); /* Adjust the scaling on hover */
 }
 
 /* Section styling */

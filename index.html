@@ -40,7 +40,7 @@
                             <li>⚙️ Research on Deep Learning and Serious Games</li>
                             <li>🧑‍🏫 Certificate of Pedagogical skills + C1 at English</li>
                         </ul>
-                        <p>Try out a classic game for me ;)</p>
+                        <p>Try out a classic game for me ;) ⬅️⬆️➡️</p>
                     </div>
                 </section>
 
@@ -48,12 +48,10 @@
                 <section class="game">
                     <div class="game-container">
                         <div class="game-header">
-                            <span>Score: 0</span>
+                            <span id="score">Score: 0</span>
                             <button class="game-restart-btn">Restart</button>
                         </div>
-                        <div class="game-display">
-                            <!-- Placeholder for Tetris game -->
-                        </div>
+                        <canvas id="tetrisCanvas"></canvas>
                     </div>
                 </section>
 
@@ -94,5 +92,7 @@
             </footer>
         </main>
     </div>
+
+    <script src="tetris.js"></script>
 </body>
 </html>
