@@ -1,0 +1,302 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: black; /* Sets the background for the whole page */
+    color: white;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100vw;
+    height: 10vh; 
+    background-image: url('header_image.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.header .logo img {
+    max-width: 10vw;
+    height: auto;
+    max-height: 8vh;
+}
+
+.header .slogan img {
+    max-width: 85vw;
+    max-height: 10vh;
+}
+
+/* Main Section */
+.main-content {
+    background-image: url("background_image.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-around;
+    color: white;
+}
+
+.main-title {
+    background-image: url("background_image.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+    border: dotted white 0.2vw;
+    color: white;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    transition: transform 0.2s ease-in-out;
+}
+
+.main-title:hover{
+    cursor: pointer;
+    animation: hoverUpDown 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes hoverUpDown {
+    0% {
+        transform: translateY(0); /* Starting position */
+    }
+    100% {
+        transform: translateY(-2%); /* Moves up by 5px */
+        scale: 75%;
+    }
+}
+
+/* Coach Info */
+.coach-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 25vw;
+    background: linear-gradient(145deg, #000428, #431a6c, #651e72, #16164d, #0d0d0d);
+    background-size: cover;
+    color: #f4f7fa;
+    border-radius: 2vw;
+    border: solid black;
+    opacity: 0.9;
+}
+
+.coach-info:hover{
+    cursor: pointer;
+    scale: 105%;
+}
+
+.coach-info h2 {
+    font-size: 1.5em;
+    color: white;
+    text-align: center;
+}
+
+.coach-photo img {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.bio {
+    max-width: 100%;
+    overflow-y: auto;
+    text-align: left;
+    padding: 0.5vw;
+    color: white;
+}
+
+.bio strong{
+    max-width: 100%;
+    overflow-y: auto;
+    margin-left: 30%;
+    color: white;
+    font:larger;
+}
+
+.bio ul {
+    list-style: none;
+    padding: 0;
+}
+
+.bio ul li {
+    margin-bottom: 5px;
+    font-size: 1em;
+}
+
+/* Game Section */
+.game {
+    width: 30vw;
+    background-color: black;
+    padding: 1vw;
+    border: 0.2vw dashed white;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    margin-bottom: 1vw;
+}
+
+.game-restart-btn {
+    color: white;
+    background: linear-gradient(145deg, #0330e1, #924ff6,#12c2e9, #0d0d0d);
+    border: white 0.2vw solid;
+    border-style: ridge;
+    padding: 0.9vw;
+    cursor: pointer;
+}
+
+.game-restart-btn:hover {
+    scale: 110%;
+}
+
+/* Section styling */
+.services {
+    padding: 2.5vw;
+    text-align: center;
+    background: linear-gradient(145deg, #12c2e9, #1a2a6c, #f64f59, #c471ed, #0d0d0d);
+    background-size: cover;
+    color: #f4f7fa;
+    border-radius: 2vw;
+    border: solid black;
+    opacity: 0.9;
+}
+
+.services:hover{
+    cursor: pointer;
+    scale: 105%;
+}
+
+/* Title styling */
+.services-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.2em;
+    color: #ffffff;
+    margin-bottom: 2vh;
+}
+
+/* Services list styling */
+.services-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 20vw;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2em;
+    color: #ffffff;
+    line-height: 1.6;
+}
+
+/* Each list item */
+.services-list li {
+    position: relative;
+    padding-left: 2vw; /* Space for the custom icon */
+    margin-bottom: 3vh;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: fadeIn 0.8s ease forwards;
+    animation-delay: calc(0.1s * var(--i));
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+/* Custom icon styling for bullet points */
+.services-list li::before {
+    content: "🌟"; /* Use an icon of your choice, or add a custom SVG */
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1.2em;
+    color: #00b4db;
+    transition: transform 0.3s ease;
+}
+
+/* Hover effect */
+.services-list li:hover {
+    transform: scale(1.05);
+    color: #00b4db;
+}
+
+.services-list li:hover::before {
+    transform: scale(1.2) rotate(15deg);
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Footer */
+footer {
+    margin-bottom: 2vh;
+    text-align: center;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10vw;
+}
+
+/* Contact Title */
+.contact-title {
+    font-family: 'Poppins', sans-serif; /* Stylish font, you can replace with other fonts */
+    font-size: 1.5em;
+    left: 8%;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    margin-top: 1vh;
+    position: relative;
+    display: inline-block;
+    transition: transform 0.3s ease, color 0.3s ease;
+    background: linear-gradient(45deg, #00b4db, #0083b0); /* Gradient effect */
+    -webkit-background-clip: text; /* Clipping text to gradient */
+    color: transparent; /* Text color becomes transparent to show gradient */
+}
+
+/* Hover Animation for Contact Title */
+.contact-title:hover {
+    transform: scale(1.1); /* Slightly grows on hover */
+    color: #00b4db; /* Changes to one solid color on hover */
+}
+
+.icon {
+    margin-right: 1vw;
+    font-size: 1.2em;
+}
+
+.contact-link {
+    color: #0a66c2; /* LinkedIn blue */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-link:hover {
+    color: #0056b3; /* Darker blue on hover */
+}
