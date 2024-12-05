@@ -45,13 +45,19 @@
                 <!-- Game Section Placeholder -->
                 <section class="game">
                     <div class="game-container">
-                        <div class="game-header">
-                            <span id="score">Score: 0</span>
-                            <button class="game-restart-btn">Restart</button>
-                        </div>
-                        <canvas id="tetrisCanvas"></canvas>
+                    <div class="game-controls">
+                        <button id="moveLeft">⬅️</button>
+                        <button id="rotatePiece">🔄</button>
+                        <button id="moveRight">➡️</button>
+                        <button id="moveDown">⬇️</button>
                     </div>
-                </section>
+                      <canvas id="tetrisCanvas" width="200" height="400"></canvas>
+                      <div class="game-header">
+                        <span id="score">Score: 0</span>
+                        <button class="game-restart-btn">Restart</button>
+                      </div>
+                    </div>
+                </section> 
 
                 <!-- Services Section -->
                 <section class="services">

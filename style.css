@@ -96,7 +96,7 @@ body {
 }
 
 #tetrisCanvas {
-    width: 100%;
+    width: auto;
     max-width: 300px;
     height: auto;
     background-color: black;
@@ -107,7 +107,32 @@ body {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
+    margin-top: 10px;
     font-size: 1rem;
+}
+
+.game-controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.game-controls button,.game-restart-btn {
+    background-color: #003459;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.game-controls button:hover,.game-restart-btn:hover {
+    background-color: #005f73;
+    transform: scale(1.1);
 }
 
 /* Services Section */
@@ -162,7 +187,6 @@ body {
 .services-list li:hover,p:hover {
     transform: scale(1.1);
 }
-
 
 /* Footer */
 footer {

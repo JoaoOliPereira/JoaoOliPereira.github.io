@@ -87,12 +87,34 @@ class Piece {
         block.y = this.originY + relativeX;
       });
     }
-}
+
+    rotateBack() {
+      this.blocks.forEach(block => {
+          const relativeX = block.x - this.originX;
+          const relativeY = block.y - this.originY;
+  
+          // Desfaz a rotação
+          block.x = this.originX + relativeY;
+          block.y = this.originY - relativeX;
+      });
+    }
+
+    move(deltaX, deltaY) {
+      this.blocks.forEach(block => {
+          block.x += deltaX;
+          block.y += deltaY;
+      });
+      this.originX += deltaX;
+      this.originY += deltaY;
+  }  
+} 
   
 class GameEngine {
-    constructor(onLineClear, context) {
+
+    constructor(onLineClear, context, blockSize, gridWidth, gridHeight) {
+      this.blockSize = blockSize;
       this.onLineClear = onLineClear;
-      this.grid = this.createEmptyGrid(22, 20);  // Grid size
+      this.grid = this.createEmptyGrid(20, 22);  // Grid size
       this.currentPiece = null;
       this.gameOver = false;
       this.context = context;
@@ -126,23 +148,46 @@ class GameEngine {
     }
   
     checkCollision() {
-      if (!this.currentPiece) return false;
-  
       for (const block of this.currentPiece.blocks) {
-        const newX = block.x;
-        const newY = block.y;
+          const newX = block.x;
+          const newY = block.y;
   
-        if (newX < 0 || newX >= this.grid[0].length || newY >= this.grid.length) {
-          return true;
-        }
+          // Verifica se está fora dos limites do grid
+          if (newX < 0 || newX >= gridWidth || newY >= gridHeight) {
+              return true;
+          }
   
-        if (newY >= 0 && this.grid[newY][newX] !== 0) {
-          return true;
-        }
+          // Verifica se colide com peças fixas
+          if (newY >= 0 && this.grid[newY][newX] !== 0) {
+              return true;
+          }
       }
       return false;
     }
   
+    applyWallKick() {
+      const kickOffsets = [
+          { x: -1, y: 0 }, // Move 1 bloco à esquerda
+          { x: 1, y: 0 },  // Move 1 bloco à direita
+          { x: 0, y: -1 }, // Move 1 bloco para cima (caso necessário)
+      ];
+  
+      for (const offset of kickOffsets) {
+          this.currentPiece.move(offset.x, offset.y);
+  
+          if (!this.checkCollision()) {
+              // A peça está em uma posição válida
+              return true;
+          }
+  
+          // Desfazer o movimento se ainda colidir
+          this.currentPiece.move(-offset.x, -offset.y);
+      }
+  
+      // Não foi possível ajustar a posição
+      return false;
+    }
+
     mergePiece() {
       this.currentPiece.blocks.forEach(block => {
         if (this.grid[block.y] && this.grid[block.y][block.x] !== undefined) {
@@ -166,6 +211,20 @@ class GameEngine {
       }
     }
   
+    rotatePiece() {
+      // Tente rotacionar a peça
+      this.currentPiece.rotate();
+  
+      // Verifique se a rotação resulta em uma posição inválida
+      if (this.checkCollision()) {
+          // A rotação foi inválida; aplique o wall kick
+          if (!this.applyWallKick()) {
+              // Se o wall kick falhar, desfaça a rotação
+              this.currentPiece.rotateBack();
+          }
+      }
+    }
+
     update() {
       if (this.currentPiece && !this.gameOver) {
         this.currentPiece.moveDown();
@@ -197,7 +256,7 @@ class GameEngine {
     render() {
       this.clearCanvas();
   
-      const blockSize = 7.5;
+      const blockSize = 20;
       for (let y = 0; y < this.grid.length; y++) {
         for (let x = 0; x < this.grid[y].length; x++) {
           if (this.grid[y][x] !== 0) {
@@ -226,14 +285,73 @@ const context = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
 const restartButton = document.querySelector('.game-restart-btn');
 
-let gameEngine = new GameEngine(updateScore, context);
+// Ajuste o tamanho do canvas e dos blocos
+const blockSize = 20; // Ajuste para um tamanho desejado
+const gridWidth = 20; // Largura do grid (colunas)
+const gridHeight = 22; // Altura do grid (linhas)
+
+canvas.width = gridWidth * blockSize; // Ajusta a largura do canvas
+canvas.height = gridHeight * blockSize; // Ajusta a altura do canvas
+
+let gameEngine = new GameEngine(updateScore, context, blockSize, gridWidth, gridHeight);
 let gameInterval = null;
 
-// Update the score display
-function updateScore(linesCleared) {
-    const currentScore = parseInt(scoreDisplay.innerText.replace("Score: ", ""), 10);
-    const newScore = currentScore + linesCleared * 100;
-    scoreDisplay.innerText = `Score: ${newScore}`;
+// Botões de controle
+const moveLeftBtn = document.getElementById('moveLeft');
+const moveRightBtn = document.getElementById('moveRight');
+const rotateBtn = document.getElementById('rotatePiece');
+const moveDownBtn = document.getElementById('moveDown');
+
+// Adicionando eventos para os botões
+moveLeftBtn.addEventListener('click', () => {
+    if (!gameEngine.gameOver && gameEngine.currentPiece) {
+        gameEngine.currentPiece.moveLeft();
+        if (gameEngine.checkCollision()) gameEngine.currentPiece.moveRight();
+        gameEngine.render();
+    }
+});
+
+moveRightBtn.addEventListener('click', () => {
+    if (!gameEngine.gameOver && gameEngine.currentPiece) {
+        gameEngine.currentPiece.moveRight();
+        if (gameEngine.checkCollision()) gameEngine.currentPiece.moveLeft();
+        gameEngine.render();
+    }
+});
+
+rotateBtn.addEventListener('click', () => {
+    if (!gameEngine.gameOver && gameEngine.currentPiece) {
+        gameEngine.rotatePiece();
+        if (gameEngine.checkCollision()) gameEngine.currentPiece.rotate();
+        gameEngine.render();
+    }
+});
+
+moveDownBtn.addEventListener('click', () => {
+    if (!gameEngine.gameOver) {
+        gameEngine.update();
+    }
+});
+
+  let speed = 200; // Velocidade inicial
+  function updateScore(linesCleared) {
+      const currentScore = parseInt(scoreDisplay.innerText.replace("Score: ", ""), 10);
+      const newScore = currentScore + linesCleared * 100;
+      scoreDisplay.innerText = `Score: ${newScore}`;
+      
+      // Aumentar dificuldade ao acumular pontos
+      if (newScore % 200 === 0 && speed > 10) {
+          clearInterval(gameInterval);
+          speed -= 10; // Diminui o intervalo em 50ms
+          gameInterval = setInterval(() => {
+              if (!gameEngine.gameOver) {
+                  gameEngine.update();
+              } else {
+                  displayGameOverMessage();
+                  clearInterval(gameInterval);
+              }
+          }, speed);
+      }
   }
   
   // Function to start the game
@@ -247,13 +365,13 @@ function updateScore(linesCleared) {
         displayGameOverMessage();
         clearInterval(gameInterval);
       }
-    }, 300); // Update every 300ms
+    }, speed); // Update every 300ms
   }
   
   // Function to display "Game Over" message
   function displayGameOverMessage() {
     context.fillStyle = 'red';
-    context.font = 'bold 30px Arial';
+    context.font = 'bold 32px Arial';
     context.fillText('Game Over', canvas.width / 4, canvas.height / 2);
   }
   
