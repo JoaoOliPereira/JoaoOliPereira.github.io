@@ -135,18 +135,22 @@ class GameEngine {
         [[1, 1, 0], [0, 1, 1]],     // Z
         [[0, 1, 1], [1, 1, 0]]      // S
       ];
-  
+
       const colors = [0x3e7ed4, 0xf5d328, 0x9b38d7, 0xf89c1f, 0xdb2727, 0x60d850, 0x44c9cc];
       const color = colors[Math.floor(Math.random() * colors.length)];
       const shape = shapes[Math.floor(Math.random() * shapes.length)];
-      this.currentPiece = new Piece(shape, color);
-  
+
+      const shapeWidth = shape[0].length;
+      const centerX = Math.floor((gridWidth - shapeWidth) / 2);
+
+      this.currentPiece = new Piece(shape, color, centerX, 0);
+
       if (this.checkCollision()) {
         this.currentPiece = null;
         this.gameOver = true;
       }
     }
-  
+      
     checkCollision() {
       for (const block of this.currentPiece.blocks) {
           const newX = block.x;
@@ -284,6 +288,21 @@ const canvas = document.getElementById('tetrisCanvas');
 const context = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
 const restartButton = document.querySelector('.game-restart-btn');
+const difficultyButtonsHTML = `
+  <div class="difficulty-buttons">
+    <h4>Difficulty</h4>
+    <button data-speed="500" data-points="50">Easy</button>
+    <button data-speed="200" data-points="100">Medium</button>
+    <button data-speed="100" data-points="200">Hard</button>
+  </div>
+`;
+
+document.querySelector('.game-container').
+  insertAdjacentHTML('beforebegin', difficultyButtonsHTML);
+
+let speed = 200; // velocidade padrão
+let pointsPerLine = 100;
+let gameInterval;
 
 // Ajuste o tamanho do canvas e dos blocos
 const blockSize = 20; // Ajuste para um tamanho desejado
@@ -294,7 +313,6 @@ canvas.width = gridWidth * blockSize; // Ajusta a largura do canvas
 canvas.height = gridHeight * blockSize; // Ajusta a altura do canvas
 
 let gameEngine = new GameEngine(updateScore, context, blockSize, gridWidth, gridHeight);
-let gameInterval = null;
 
 // Botões de controle
 const moveLeftBtn = document.getElementById('moveLeft');
@@ -333,30 +351,22 @@ moveDownBtn.addEventListener('click', () => {
     }
 });
 
-  let speed = 200; // Velocidade inicial
   function updateScore(linesCleared) {
-      const currentScore = parseInt(scoreDisplay.innerText.replace("Score: ", ""), 10);
-      const newScore = currentScore + linesCleared * 100;
-      scoreDisplay.innerText = `Score: ${newScore}`;
-      
-      // Aumentar dificuldade ao acumular pontos
-      if (newScore % 200 === 0 && speed > 10) {
-          clearInterval(gameInterval);
-          speed -= 10; // Diminui o intervalo em 50ms
-          gameInterval = setInterval(() => {
-              if (!gameEngine.gameOver) {
-                  gameEngine.update();
-              } else {
-                  displayGameOverMessage();
-                  clearInterval(gameInterval);
-              }
-          }, speed);
-      }
+    const currentScore = parseInt(scoreDisplay.innerText.replace("Score: ", ""), 10);
+    const newScore = currentScore + linesCleared * pointsPerLine;
+    scoreDisplay.innerText = `Score: ${newScore}`;
+  }
+
+  function setDifficulty(speedValue, pointValue) {
+    speed = speedValue;
+    pointsPerLine = pointValue;
+    clearInterval(gameInterval);
+    startGame();
   }
   
   // Function to start the game
   function startGame() {
-    gameEngine = new GameEngine(updateScore, context);
+    gameEngine = new GameEngine(updateScore, context, blockSize, gridWidth, gridHeight);
     scoreDisplay.innerText = 'Score: 0';
     gameInterval = setInterval(() => {
       if (!gameEngine.gameOver) {
@@ -365,9 +375,17 @@ moveDownBtn.addEventListener('click', () => {
         displayGameOverMessage();
         clearInterval(gameInterval);
       }
-    }, speed); // Update every 300ms
+    }, speed);
   }
-  
+
+  document.querySelectorAll('.difficulty-buttons button').forEach(button => {
+    button.addEventListener('click', () => {
+      const newSpeed = parseInt(button.dataset.speed);
+      const newPoints = parseInt(button.dataset.points);
+      setDifficulty(newSpeed, newPoints);
+    });
+  });
+
   // Function to display "Game Over" message
   function displayGameOverMessage() {
     context.fillStyle = 'red';

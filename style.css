@@ -236,3 +236,24 @@ footer {
         font-size: 1.5em;
     }
 }
+
+.difficulty-buttons {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.difficulty-buttons button {
+  background-color: #444;
+  color: white;
+  border: none;
+  margin: 0 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.difficulty-buttons button:hover {
+  background-color: #666;
+}
