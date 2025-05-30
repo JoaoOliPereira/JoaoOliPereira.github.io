@@ -257,3 +257,20 @@ footer {
 .difficulty-buttons button:hover {
   background-color: #666;
 }
+
+.numerology-btn{
+  background-color: #7128d7;
+  color: white;
+  border: none;
+  margin: 0 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.numerology-btn:hover {
+    background-color: #68509c;
+    transform: scale(1.1);
+}
